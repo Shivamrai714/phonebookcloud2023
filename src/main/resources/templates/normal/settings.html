@@ -1,0 +1,69 @@
+
+<!doctype html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/" 
+th:replace="normal/base::layout(~{::section})">
+<head>
+	<meta charset="UTF-8" />
+	<title>this is Settings page</title>
+<body>
+
+<section>
+
+<div class="container">
+<div class="row">
+
+<div class="col-md-12">
+
+<div class="card">
+<div class="card-body">
+
+<h2 class="text-center my-3">Change Password</h2>
+
+
+	<form action="" method="POST"  th:action="@{/user/change-password}">
+	
+	<div class="form-group">
+	<input type="text" name="oldPassword" class="form-control" placeholder="Enter the Old Password " />
+	</div>
+	
+	<div class="form-group">
+	<input type="password" name="newPassword" class="form-control" placeholder="Enter the New Password " />
+	</div>
+	
+	<div class="container text-center">
+	<button type="submit" class="btn btn-success">Submit</button>
+	<button type="reset" class="btn btn-warning">Reset</button>
+	
+	</div>
+	
+	</form>
+
+
+
+
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+	
+	<!-- STEP 40 :a , making the sidebar tags as visible, target the common class "item"  -->
+	<script>
+	$(document).ready(
+       ()=> {
+		$(".item").removeClass("active");
+	    $("#settings-link").addClass("active");   
+	} 
+
+	);
+	</script>
+	
+</section>
+
+</body>
+</html>

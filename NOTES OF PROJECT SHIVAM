@@ -1,0 +1,490 @@
+Spring Boot Project :
+
+
+Smart Contact Manager.
+Tools:  Spring mvc, Springboot, Jpa-Hibernate, Thymeleaf(views),Spring security , MySQL .
+
+
+Modules Used:
+
+1.User_Management  (Register, Login, Logout)
+2.Contact Management (show contacts, update contacts, add contacts , search)
+
+Shri Ganeshye Namaha:
+
+Make Spring-starter-Project : 
+name:Smart Contact Manager
+dependecies: 
+          1.spring-boot-dev-tools
+          2.spring boot-starter-web
+          3.started-thymeleaf
+          4.starter-data-jpa
+          5.my-sql-connector
+          6.starter-security
+          7.validation-api
+          8.hibernate-validator
+
+Main file has @SpringBootApplication= @Configuration ,@EnableAutoConfiguration , @ComponenentScan
+
+
+
+Setup the properties in application.properties.
+
+server.port=8282
+spring.datasource.name=smartcontact
+spring.datasource.url=jdbc:mysql://localhost:3306/smartcontact
+spring.datasource.username=root
+spring.datasource.password=root
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL55Dialect
+spring.jpa.hibernate.ddl-auto=update     //used for automatic making the table      
+
+-> Make the ER diagram from draw.io website.
+
+Video 40:
+ 
+ Make the entities as made in ER diagram.
+ - Make user class.(make is @Entity ,@Id,@GeneratedValue(strategy=GenerationType.AUTO))
+
+
+- Make a contact class  ,
+   
+
+- Set mapping 1 to many
+  Declare the List<contact> in User class.(gen getter,setter for it)
+  Declare User var in Contact class.(gen getter,setter)
+
+User-mapping:
+  @OneToMany(cascade=CascadeType.ALL , fetch=FetchType.LAZY)
+
+Contact-mapping:
+  @ManyToOne()
+
+Now Make a UserRepository interface and just extends the jpaRepository(User,Integer)
+
+Now create a new User and also save it using save method.
+
+Now when we run project, tables are created . To avoid extra creation of table for Contacts use mappedBy="user"  in   @OneToMany(cascade=CascadeType.ALL , fetch=FetchType.LAZY, mappedBy="user")
+
+No need to create seperate table for contacts, manage contact using foreign key "user" only.
+
+Now make A TestController and check whether data is submitted to database or not.
+
+_____________________________________________
+
+Video : 41
+
+Make the Controllers : and design handlers methods to setup the Thymeleaf /html view to show.
+
+Use Inherit Thymeleaf concept : desing a  base.html file and put css/html/js 
+and import in other files.
+set the xmlns: of Thymeleaf.
+
+In Base.html
+Now we take the (content)input as framgent="layout()" and in body section use the replace="${}"  to dynamically put the file here.
+
+So what happen actually , whenever any other html file is called , it call the base.html using th replace tag and put its whole content (generally stored in section tag) inside the body of base.html ;
+
+
+
+We can set the common header , footers in base file to show in all files.
+
+eg include the navbar to show in all folders.
+
+** We can make out own css , js , images in static folder.
+Include css.file
+
+<link rel="stylesheet" th:href="@{/css/style.css}">
+
+Include js file
+
+Just go to base.html file and include the <script th:src="@{/js/script.js}">
+
+__________________________________
+Video 42 :
+
+Just design the fronted of Home page : 
+__
+
+Video 43 :
+Design the Sign up form :
+
+__________________________
+
+Video 44:
+
+We send the empty user from handler of signup , and receive it on th:object="${user}" in  <form >  - this is used to show the old data present in user. And we also assign the old values to fields using  th:value="${user.name}"
+
+To remove the green color tick used the from -control  "is valid "
+
+
+_______________________________
+
+Video 45:  Server Side Validation:
+
+apply 2 dependencies like javax validation , and hibernate-validator 
+
+Then set the server side validations using @Blank , @Email @Size @AssertTrue etc
+
+Also go to Controller, ans use @Valid in handler method argument() and collect result in Bindingresults.
+
+
+Now invalid feedback is added to show the error in name input field of signup page. BAsically giving red-border on field if error comes.
+
+Now to show this : we sholud dynamically append the  class name as "is-invalid" addition to form control if erros comes.
+
+
+Keep in Mind that the binding resutl1 should be placed after the Model User 
+
+Do check the checkbox to check server validation of name field
+
+We have make off the by defalult validation of html in <form novalidate> : this is done to test the working @Blank and  @Size , server side validations.
+
+
+____________________________________  
+
+Video 46 : BCryptPasswordEncoder
+
+Making Login System.
+
+dependency of security , remove version  :
+Apply spring-starter-security
+
+Making the UserController , to handler requests of user and normal user
+
+Now we are securing the localhost:8282/user/index  
+
+By defalut spring-secutiy protects all url , and give the password on console.
+
+We need to define explicity which url needs to be protected , and take manual passord.
+
+
+Make the CustomUserDetails  , UserDetailsServiceImp Services classes. respectively.
+Make the MyConfig class , extends the WebSecurityConfigurerAdapter
+
+
+___________________________________________
+
+Now designing our own login from  , google login form bootstrap : open bootsnip website and copy the html and paste the inside of body into  section of our login.html file , also copy the css except .body {}  and paste in style.css file of static/css folder.
+
+
+ Keep in mind the custom form desinged by us should be , have same field name as username and password , as spring-security used it in his default form.
+
+ Go to config ,and make its as permanet login page , 
+ put loginPage("/signin")  in configure method.
+
+ Now put th:action="@{/signin}" in <form> tag
+
+ Also show errors when , invalid given .
+
+ ___________________
+
+ Video-50 :
+
+ we can mentions the method to configure the behaviour of Login page
+
+ -- loginPage()
+ -- loginProcessingUrl() -to set the redirect view of username and password.
+
+ -- defalutSuccesUrl() ->after successful url.
+ -- failureUrl()   
+
+_____________________________
+
+Video 51:
+
+Desinging the inner page of User/index    - ie design the normal/user_dashboard
+
+
+________________________
+Video 52 :
+Making side bar for normal user
+
+Shortcut to add anchor tags
+
+a.item*5  + tab
+
+ctrl+alt+down key
+
+
+Use media query to hide side bar on small screens , and mentions the configuration of sidebar and content;
+
+
+How to attach the icons : 
+google:
+
+font awsome icon 5 cdn
+open cdn js.com and copy the link tag and paste below the css link in base.html
+
+now google and star font awsome icons and search icons of home and use them in your file
+
+Used to give the closing symbol
+   <span class="crossBtn">&times;</span>
+
+
+: Using the js to add the functionlaity of opening and closing the sidebar using the 3 dash lines.
+
+Trick opened the script file in vs code.Changes will be reflected in eclipse.
+
+
+Add the js fuction and display the js function span and i tag as in X marks
+   ________________
+
+
+Video 53:
+
+Make the from For Contact Form
+:
+
+Designing the add-contact form form the user.
+
+*********  All the url are prefixed by the user : so that the other are relative to user
+
+eg : user/index :
+
+***************8
+
+Since we need to use the user in all handlers , so making a common method to assign handler to all.
+
+
+* Fixing the navbar : apply fixed-top
+
+_______________
+Video : 54 
+
+Beckend code of Add contact From,
+To check the working print the Contact object : 
+
+To remove the max Image size upload:
+
+#if error comes in uploading file size image the use these : -1 make infinte size access.
+spring.servlet.multipart.max-file-size=-1
+spring.servlet.multipart.max-request-size=-1
+
+
+//to save the current contact : we need to find the logged in user : using the principal ,
+then find the userby username ,then save the current contact to that logged in user.
+
+Check the data Saved to the Contact Table of Database in MSQL WorkBench
+
+If error comes remove the toString method : Not in mine case.
+___________________________
+
+
+Video 55 : Saving image of the Form
+
+Save Image to a folder and only store the name in the database, but name of images should be unique
+
+//First finding path to the static folder , then adding it.
+    
+            if(file.isEmpty())
+            {
+                System.out.println("File is empty");
+            }
+            else{
+                //set the file to folder ,and put in contact field of image.
+                
+                contact.setImage(file.getOriginalFilename());
+                
+                
+                File saveFile = new ClassPathResource("static/img").getFile();  
+                Path path=Paths.get(saveFile.getAbsolutePath()+File.separator+file.getOriginalFilename());
+                
+                Files.copy(file.getInputStream(),path,StandardCopyOption.REPLACE_EXISTING);
+                
+                System.out.println("File uploaded successfully");
+            }
+
+
+______________________________________
+
+Vido 56 - 57 :
+
+Adding the TinyMCE / text box editor 
+
+Show success Msg after addition of User
+
+
+Just include the script file of Tiny Editor inside the section tag of add-contact-from and copy its code to text box field 
+
+give the textarea id to our text box:
+
+Copy paste this cody of Tiny script tags 
+
+<script src="https://cdn.tiny.cloud/1/your-tinymce-apikey/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+
+<script>
+        tinymce.init({
+              selector: "#mytextarea"
+        });
+</script>
+
+
+
+
+If want to insert the large text in text box, need to manually change limit from MSQL workbench ,
+
+Change the type of description field to lond text
+
+and if html data is put into then fecth it usen th:utext
+_________________________
+
+
+Video : 58 
+Showing the Contacts Saved
+
+
+We are , making the seperate Repository for the Contacts .
+
+Implemeting pagenation NEXT and PREVIOUS FUNCTIONS
+
+_______________________________________
+
+Video 59 
+Implemeting pagenation NEXT and PREVIOUS FUNCTIONS
+
+Copy from bootstrap pagenation STEP 27 :
+From handler / backend code send only the requeired fields.
+
+Show dynamic page to the user Controller in showContacts handler.
+
+
+Need to change the Repository method in the Contact Repository method. And implement the Page<Contact> code.
+
+Use classappend to show teh highlighted current page.
+
+To see the pagenation firer the user/show-contacts/0     : page no is must.
+
+Give the 0 contact on the side bar
+____________________________________________________
+
+Setting profile Photo
+
+
+Video 60 : Security bug of modification in url can be solved by the USING THE POST method , or by video method
+
+
+
+Addin the image before name in show contact , and modify image in css file . aslo give defalut picture if not photo given.
+
+
+But problem is that when we re run the project, images are deleted from the target folder.
+
+______________________
+
+Adding functionality to redirect to Profile of Contact via mail link
+
+Desing handler to handler user/"id"/contact id to show the profile
+
+_____________________________
+
+VIDEO 61 : Removing bug random changing the url and see other users using hit and trial method /choose the POST METHOD Or allow this modification
+
+Chech the current log in user, using the principal ,
+ So that we can't access random contacts.
+
+
+______________________________________
+
+VIDEO 62 : DELETE buttom activation
+
+Applying the delete functionality : change the button to <a> tag.
+
+Also need to make handler , to handler the delete request.
+
+TO delete the contact , we need to unlink it from the user , because during the mapping we have included the CascadeAll in One to  MAny mapping 
+
+ALso chech in database , whethere the contact is actually deleted.
+
+
+********** _______________________
+
+ACTUALLY DELETEING THE CONTACTS (Here only user is delinking not the contacts are delteing)
+*****
+
+Since we have applied the cascade in @OneToMany Mapping so deleteof Repository is not funcional here
+
+TO solve this SEE VIDEO 65 :
+
+Add orphanRemoval =true;  // this menas that ,when the contact (child ) unlikns forn parent (User) its automatically removed.
+
+Also overide the equals method, remvoe the current Contact from the user.
+
+
+
+
+
+
+TO appply the sweet alert before deleting just google it , and copy the sript tag on show_contacts and add the code
+
+Systax to use onclick delete dynamically
+
+ th:onclick="|deleteContact(${c.cid} )|"
+
+ Same fucntionality is added to delete button inside the main profile of Contact.
+
+ Just take care of object is contact, so whiteLAbel Error is not come.
+
+
+Also need to delete the image of current object from the img folder of target folder.
+
+Put the code of script file in base.html in <script> tags .
+
+_________________________
+
+ Video 63:  
+ Update Option button :
+
+Designing new from for update , learning purposes.
+
+Need to user POst Mapping to secure manipulations form the url :
+
+Also need to use the form tag , if used the used post mapping , <a> tag defalut uses get mapping as for delete fucntion
+
+Just Copy the same form for the add, and provide the update form  :
+
+Also fetch the values of data fields that are sent using the Model
+
+To show the defalut value in text area use the th:text = ${contact.description}
+
+________________________________
+
+
+//  Video 64  : Updateing the form in the beckEnd , also handler the image
+
+TO handler the problem arises on the updating is that user is not assigned , so not updated
+
+So get the current user, and save the updated contact in it.
+
+
+//Getting the old contact details and chech if new one is present or not.
+
+// VIDEo 65 : Deleteing actually 
+
+
+Similaary code to delete old photo , using the path and old id .
+
+Look in dataBase ,and target folder for the changes.
+
+
+
+
+
+
+________________________________________
+
+VIdeo 66
+
+Desing the Profile Home : 
+
+
+____________________________________
+
+Video : 68 
+Desing the Search Controllr  
+
+Adding the concepts of java script :
+
+Make new Controller SearchController
+
+Refer video to Understand the code for the Script file. and onclick method.
